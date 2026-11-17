@@ -1,21 +1,9 @@
 package org.example.atividadebarbieguardaroupas;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class AtividadeBarbieGuardaRoupasApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(AtividadeBarbieGuardaRoupasApplication.class, args);
-    }
-
-}
-
 /**
  * Sistema do guarda-roupa da Barbie.
  */
-class GuardaRoupa {
+public class GuardaRoupa {
 
     private double orcamento;
 
@@ -39,7 +27,6 @@ class GuardaRoupa {
      * @return preço final
      */
     public double precoComDesconto(double preco, double percentual) {
-        // CORREÇÃO BUG 1: Valida se o percentual está entre 0 e 100
         if (percentual < 0 || percentual > 100) {
             throw new IllegalArgumentException("O percentual de desconto deve estar entre 0 e 100.");
         }
@@ -55,7 +42,6 @@ class GuardaRoupa {
      * @return true se couber no orçamento
      */
     public boolean cabeNoOrcamento(double preco) {
-        // CORREÇÃO BUG 2: Alterado '<' para '<=' para incluir o valor exato
         return preco <= orcamento;
     }
 
@@ -68,7 +54,6 @@ class GuardaRoupa {
      * @return true se for de gala
      */
     public boolean ehDeGala(double preco) {
-        // CORREÇÃO BUG 3: Alterado '>=' para '>' pois gala é apenas acima de 200
         return preco > 200.0;
     }
 
@@ -78,7 +63,6 @@ class GuardaRoupa {
      * @param preco valor pago pelo look
      */
     public void registrarCompra(double preco) {
-        // CORREÇÃO DESAFIO EXTRA: Impede compra maior que o orçamento disponível
         if (preco > orcamento) {
             throw new IllegalArgumentException("Orçamento insuficiente");
         }
