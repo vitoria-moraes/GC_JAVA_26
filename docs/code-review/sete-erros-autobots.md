@@ -1,0 +1,52 @@
+# Relatório de Code Review — A Base dos Autobots
+
+Lista dos **7 erros** identificados no projeto `autobot-base`, seguindo o formato exigido para entrega.
+
+---
+
+**Erro 1:** Estouro de índice (`IndexOutOfBoundsException`) na condição de parada do laço `for` (`i <= lista.size()`), tentando acessar um índice igual ao tamanho da lista (índice `3` em uma lista de `3` elementos, cujos índices válidos vão de `0` a `2`).
+**Onde:** `GerenciadorAutobots.java`, método `calcularEnergonTotal()`
+**Boa prática violada:** Controle correto de limites de iteração em coleções / prevenção de falhas em tempo de execução
+**Correção:** Alterei a condição do laço de `i <= lista.size()` para `i < autobots.size()`, garantindo que a iteração pare no último índice válido (`size() - 1`).
+
+---
+
+**Erro 2:** Comparação de igualdade entre objetos `String` utilizando o operador relacional `==` em vez do método `.equals()`, comparando referências de memória em vez do conteúdo textual.
+**Onde:** `GerenciadorAutobots.java`, método `buscar(String nome)`
+**Boa prática violada:** Comparação adequada de objetos e strings em Java (`String` sempre com `.equals()`)
+**Correção:** Substituí `a.n == nome` por `autobot.getNome().equals(nome)` (com validação prévia para `nome == null`), assegurando que buscas com strings instanciadas dinamicamente (como `new String("Bumblebee")`) encontrem o Autobot corretamente.
+
+---
+
+**Erro 3:** Bloco `catch` vazio (`catch (Exception ex) {}`) que captura e silencia completamente a exceção lançada quando um Autobot possui Energon negativo, ocultando falhas críticas em execução.
+**Onde:** `GerenciadorAutobots.java`, método `reparar(Autobot a)`
+**Boa prática violada:** Tratamento explícito de exceções (nunca engolir ou silenciar exceções com `catch` vazio)
+**Correção:** Removi o bloco `try/catch` que engolia a exceção e passei a validar a pré-condição antes da operação, lançando explicitamente uma `IllegalArgumentException` com mensagem descritiva caso o Autobot seja nulo ou possua Energon negativo.
+
+---
+
+**Erro 4:** Exposição direta do estado interno da entidade por meio de atributos declarados como `public` (`n`, `e`, `nivel`), permitindo alterações arbitrárias e inconsistentes (como Energon negativo) sem validação.
+**Onde:** `Autobot.java` (atributos da classe) e acessos diretos em `GerenciadorAutobots.java` e `main.java.exemplospring.main.java.java_puro.main.java.spring.MainExemploSpring.java`
+**Boa prática violada:** Encapsulamento (campos sempre `private` com acesso controlado por getters e setters)
+**Correção:** Alterei os atributos de `Autobot` para `private`, criei os métodos de acesso (`getNome()`, `getEnergon()`, `getNivel()`) e implementei `setEnergon(double energon)` com validação contra valores negativos.
+
+---
+
+**Erro 5:** Uso de valores literais soltos no meio da lógica de negócio (`100` na recarga de reparo, `500` para limite Elite e `200` para limite Padrão) sem identificação do seu significado.
+**Onde:** `GerenciadorAutobots.java`, métodos `reparar(Autobot a)` e `classificar(Autobot a)`
+**Boa prática violada:** Eliminação de números mágicos por meio de constantes nomeadas (`private static final`)
+**Correção:** Extraí os valores literais para constantes descritivas no topo da classe: `RECARGA_REPARO_ENERGON = 100.0`, `LIMITE_ENERGON_ELITE = 500.0` e `LIMITE_ENERGON_PADRAO = 200.0`.
+
+---
+
+**Erro 6:** Uso de identificadores abreviados e sem semântica clara (`n`, `e`, `a`, `ex`) para atributos, parâmetros e variáveis, prejudicando a legibilidade e manutenção do código.
+**Onde:** `Autobot.java` (`n`, `e`), `GerenciadorAutobots.java` (`a`, `ex`) e `main.java.exemplospring.main.java.java_puro.main.java.spring.MainExemploSpring.java` (`encontrado.n`, `ratchet.e`)
+**Boa prática violada:** Nomenclatura clara e autoexplicativa em variáveis, atributos e parâmetros
+**Correção:** Renomeei `n` para `nome`, `e` para `energon`, `a` para `autobot` e `lista` para `autobots`, tornando o código legível sem depender de contexto externo.
+
+---
+
+**Erro 7:** Comentários Javadoc superficiais e redundantes que apenas repetem o nome da classe ou omitiam as regras de negócio, parâmetros, retornos e exceções dos métodos públicos.
+**Onde:** `Autobot.java`, `GerenciadorAutobots.java` e `main.java.exemplospring.main.java.java_puro.main.java.spring.MainExemploSpring.java`
+**Boa prática violada:** Documentação técnica útil (Javadoc explicando intenção, regras de negócio, `@param`, `@return` e `@throws`)
+**Correção:** Reescrevi os Javadocs das classes e adicionei documentação completa nos construtores e métodos públicos explicando as regras de negócio (como os critérios de classificação por faixa de Energon e o comportamento de falha no reparo).
